@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Threading.Tasks;
 using Application.Command.ProductCommand.AdminActionsProduct.AdminActionCreateProduct;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebUI.Controllers.AdminApp
 {
@@ -18,7 +19,8 @@ namespace WebUI.Controllers.AdminApp
 
         }
 
-        [HttpGet]
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Conflict)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]

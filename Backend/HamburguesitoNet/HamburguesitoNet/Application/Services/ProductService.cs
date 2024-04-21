@@ -24,6 +24,15 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
+        public async Task<IEnumerable<Product>> GetAll()
+        {
+            return await _productRepository.GetAllAsync();
+        }
+
+        public async Task<Product> GetById(int entityId)
+        {
+            return await _productRepository.GetByIdAsync(entityId);
+        }
 
         public async Task<Product> Add(Product entity, CancellationToken cancellationToken)
         {
@@ -31,30 +40,44 @@ namespace Application.Services
             await _unitOfWork.CommitAsync(cancellationToken);
             return entity;
         }
-
-        public Task<Product> Delete(int entityId, CancellationToken cancellationToken)
+        public async Task<Product> Update(Product entity, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return _productRepository.Update(entity);
         }
 
-        public async Task<IEnumerable<Product>> GetAll()
+
+
+
+        public async Task<TenantIntegration> Update(TenantIntegration entity, CancellationToken cancellationToken)
         {
-            return await _productRepository.GetAllAsync();
+            var tenantIntegrationDb = await GetById(entity.Id);
+            if (!await _tenantEndpoint.TenantExist(entity.TenantId))
+                throw new AddTenantIntegrationException("The entered tenant does not exist");
+            tenantIntegrationDb.TenantId = entity.TenantId;
+            tenantIntegrationDb.IntegrationId = entity.IntegrationId;
+            tenantIntegrationDb.Connection = entity.Connection;
         }
 
-        public Task<Product> GetById(int entityId)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<Product> Update(Product entity, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+
+
+
+
 
         public Task<Product> UpdateLastExecution(int entityId, DateTime lastExecution, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
+        public async Task<Product> Delete(int entityId, CancellationToken cancellationToken)
+        {
+            return await _productRepository
+        }
+
+
+
+
+
+
+
     }
 }
