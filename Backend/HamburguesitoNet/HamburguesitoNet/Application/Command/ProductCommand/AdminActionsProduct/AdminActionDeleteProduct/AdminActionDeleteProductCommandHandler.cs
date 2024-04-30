@@ -14,30 +14,16 @@ namespace Application.Command.ProductCommand.AdminActionsProduct.AdminActionDele
     public class AdminActionDeleteProductCommandHandler : IRequestHandler<AdminActionDeleteProductCommand, bool>
     {
 
-        private readonly IDelete<Product> _productService;
+        private readonly IDelete<bool> _productService;
         
         public AdminActionDeleteProductCommandHandler(ProductService productService) {
 
             _productService = productService;
         }
 
-
-        public async Task<bool> Handle(AdminActionDeleteProductCommand request, CancellationToken cancellationToken)
+        Task<bool> IRequestHandler<AdminActionDeleteProductCommand, bool>.Handle(AdminActionDeleteProductCommand request, CancellationToken cancellationToken)
         {
-            var prod = _productService.
-
-
-            if (product == null ||  )
-            {
-               
-            }
-
-            else
-            {
-                await _productService.Delete(request.id, cancellationToken);
-            }
-           
-           
+            return _productService.Delete(request.id, cancellationToken);
         }
     }
 }

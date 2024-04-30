@@ -30,7 +30,7 @@ namespace HamburguesitoNet.Application
             services.AddTransient<IAdd<Product>, ProductService>();
             services.AddTransient<IGet<Product>, ProductService>();
             services.AddTransient<IUpdate<Product>, ProductService>();
-            services.AddTransient<IDelete<Product>, ProductService>();
+            services.AddTransient<IDelete<bool>, ProductService>();
             #endregion
 
             return services;

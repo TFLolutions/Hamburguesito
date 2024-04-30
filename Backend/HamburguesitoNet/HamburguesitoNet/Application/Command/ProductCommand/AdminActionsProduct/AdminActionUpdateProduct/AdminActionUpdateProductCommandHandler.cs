@@ -23,18 +23,18 @@ namespace Application.Command.ProductCommand.AdminActionsProduct.AdminActionUpda
 
         public async Task<Product> Handle(AdminActionUpdateProductCommand request, CancellationToken cancellationToken)
         {
-            var product = _productService.GetById(request.ProductId);
 
-            if (product != null)
+            var product = new Product
             {
-              
-            }
-
-            else
-            { 
-                throw new ArgumentException() 
-            }
- 
+                Id=request.Id,
+                Price = request.Price,
+                Name = request.Name,
+                Active = request.Active,
+                Description = request.Description,
+            };
+            
+            var response = await _productService.Update(product,cancellationToken);
+            return response;
         }
 
     }

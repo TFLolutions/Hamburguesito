@@ -10,12 +10,12 @@ namespace Application.Command.ProductCommand.AdminActionsProduct.AdminActionUpda
 {
     public class AdminActionUpdateProductCommand : IRequest<Product>
     {
-        public int ProductId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
         public bool Active { get; set; }
-        public IList<string> Ingredients { get; set; }
+        
 
     }
 }

@@ -1,5 +1,7 @@
-﻿using Application.Services;
+﻿using Application.Command.ProductCommand.AdminActionsProduct.AdminActionUpdateProduct;
+using Application.Services;
 using Domain.Models;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Application.Command.ProductCommand.AdminActionsProduct.AdminActionCreateProduct
 {
-    public class AdminActionCreateProductCommandHandler
+    public class AdminActionCreateProductCommandHandler: IRequestHandler<AdminActionCreateProductCommand, Product>
     {
         private readonly ProductService _productService;
 

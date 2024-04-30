@@ -1,4 +1,5 @@
-﻿using Application.Services.Interfaces;
+﻿using Application.Command.ProductCommand.AdminActionsProduct.AdminActionUpdateProduct;
+using Application.Services.Interfaces;
 using Domain.Models;
 using HamburguesitoNet.Application.Common.Interfaces;
 using HamburguesitoNet.Application.Repositories.Interfaces;
@@ -6,13 +7,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 namespace Application.Services
 {
-    public class ProductService : IAdd<Product>, IGet<Product>, IUpdate<Product>, IDelete<Product>
+    public class ProductService : IAdd<Product>, IGet<Product>, IUpdate<Product>, IDelete<bool>
     {
         private readonly IGenericRepository<Product> _productRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -42,42 +44,33 @@ namespace Application.Services
         }
         public async Task<Product> Update(Product entity, CancellationToken cancellationToken)
         {
-            return _productRepository.Update(entity);
+            var productDb = await GetById(entity.Id);
+            if (productDb != null || productDb.Active != false)
+            {
+                productDb.Price = entity.Price;
+                productDb.Name = entity.Name;
+                productDb.Active = entity.Active;
+                productDb.Description = entity.Description;
+                _productRepository.Update(productDb);
+                await _unitOfWork.CommitAsync(cancellationToken);
+                return productDb;
+
+            }
+            //TODO: Personalizar excepcion
+            else
+                throw new NotImplementedException();
         }
-
-
-
-
-        public async Task<TenantIntegration> Update(TenantIntegration entity, CancellationToken cancellationToken)
-        {
-            var tenantIntegrationDb = await GetById(entity.Id);
-            if (!await _tenantEndpoint.TenantExist(entity.TenantId))
-                throw new AddTenantIntegrationException("The entered tenant does not exist");
-            tenantIntegrationDb.TenantId = entity.TenantId;
-            tenantIntegrationDb.IntegrationId = entity.IntegrationId;
-            tenantIntegrationDb.Connection = entity.Connection;
-        }
-
-
-
-
-
-
 
         public Task<Product> UpdateLastExecution(int entityId, DateTime lastExecution, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
-        public async Task<Product> Delete(int entityId, CancellationToken cancellationToken)
+        public async Task<bool> Delete(int entityId, CancellationToken cancellationToken)
         {
-            return await _productRepository
+            var productDb = await GetById(entityId);
+            productDb.Active = false;
+            await _unitOfWork.CommitAsync(cancellationToken);
+            return true; 
         }
-
-
-
-
-
-
-
     }
 }
