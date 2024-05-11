@@ -46,6 +46,8 @@ namespace HamburguesitoNet.Application.Repositories.Interfaces
         void Update(TEntity entity);
 
         void UpdateRange(TEntity entity);
+
+        void Remove (TEntity entity);
         #endregion
     }
 }

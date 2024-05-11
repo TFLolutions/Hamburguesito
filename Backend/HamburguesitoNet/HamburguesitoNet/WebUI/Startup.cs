@@ -10,6 +10,7 @@ using HamburguesitoNet.WebUI.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,6 +36,13 @@ namespace HamburguesitoNet.WebUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            //add dbcontext
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("Connectionstring")));
+
+
             services.AddInfrastructure(Configuration);
 
             services.AddApplication();
@@ -57,7 +65,7 @@ namespace HamburguesitoNet.WebUI
                 .AddDbContextCheck<ApplicationDbContext>();
 
             services.AddControllersWithViews();
-            services.AddFluentValidationAutoValidation() 
+            services.AddFluentValidationAutoValidation()
             .AddFluentValidationClientsideAdapters()
             .AddValidatorsFromAssemblyContaining<IApplicationDbContext>();
 

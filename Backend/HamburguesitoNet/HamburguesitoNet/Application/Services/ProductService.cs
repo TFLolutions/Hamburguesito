@@ -1,4 +1,5 @@
-﻿using Application.Services.Interfaces;
+﻿using Application.Command.ProductCommand.AdminActionsProduct.AdminActionUpdateProduct;
+using Application.Services.Interfaces;
 using Domain.Models;
 using HamburguesitoNet.Application.Common.Interfaces;
 using HamburguesitoNet.Application.Repositories.Interfaces;
@@ -6,13 +7,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 namespace Application.Services
 {
-    public class ProductService : IAdd<Product>, IGet<Product>, IUpdate<Product>, IDelete<Product>
+    public class ProductService : IAdd<Product>, IGet<Product>, IUpdate<Product>, IDelete<bool>
     {
         private readonly IGenericRepository<Product> _productRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -24,6 +26,15 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
+        public async Task<IEnumerable<Product>> GetAll()
+        {
+            return await _productRepository.GetAllAsync();
+        }
+
+        public async Task<Product> GetById(int entityId)
+        {
+            return await _productRepository.GetByIdAsync(entityId);
+        }
 
         public async Task<Product> Add(Product entity, CancellationToken cancellationToken)
         {
@@ -31,30 +42,35 @@ namespace Application.Services
             await _unitOfWork.CommitAsync(cancellationToken);
             return entity;
         }
-
-        public Task<Product> Delete(int entityId, CancellationToken cancellationToken)
+        public async Task<Product> Update(Product entity, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
+            var productDb = await GetById(entity.Id);
+            if (productDb != null || productDb.Active != false)
+            {
+                productDb.Price = entity.Price;
+                productDb.Name = entity.Name;
+                productDb.Active = entity.Active;
+                productDb.Description = entity.Description;
+                _productRepository.Update(productDb);
+                await _unitOfWork.CommitAsync(cancellationToken);
+                return productDb;
 
-        public async Task<IEnumerable<Product>> GetAll()
-        {
-            return await _productRepository.GetAllAsync();
-        }
-
-        public Task<Product> GetById(int entityId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Product> Update(Product entity, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
+            }
+            //TODO: Personalizar excepcion
+            else
+                throw new NotImplementedException();
         }
 
         public Task<Product> UpdateLastExecution(int entityId, DateTime lastExecution, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
+        }
+        public async Task<bool> Delete(int entityId, CancellationToken cancellationToken)
+        {
+            var productDb = await GetById(entityId);
+            productDb.Active = false;
+            await _unitOfWork.CommitAsync(cancellationToken);
+            return true; 
         }
     }
 }
