@@ -28,6 +28,13 @@ namespace HamburguesitoNet.Infrastructure.Persistence
             _userService = userService;
         }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Table> Tables { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+
+
+
+        
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             foreach (var entry in ChangeTracker.Entries<Audit>())

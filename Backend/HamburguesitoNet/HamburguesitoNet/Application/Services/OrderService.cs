@@ -33,10 +33,10 @@ namespace Application.Services
                 await _unitOfWork.CommitAsync(cancellationToken);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw new Exception();
+                throw new Exception(ex.ToString());
             }
 
             return entity;

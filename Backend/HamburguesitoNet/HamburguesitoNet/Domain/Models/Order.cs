@@ -11,6 +11,7 @@ namespace Domain.Models
     {
         public int OrderId { get; set; }
         public int CustomerId { get; set; }
+        public int TableId { get; set; }
         public string Status { get; set; }
         public DateTime? DeliveryDate { get; set; }
         public string ShippingAddress { get; set; }
@@ -19,6 +20,6 @@ namespace Domain.Models
 
         // Navigation property to link with Customer
         public virtual Customer Customer { get; set; }
-        public ICollection<Product> Products { get; set; } = new List<Product>();
+        public ICollection<Product> Products { get; set; }
     }
 }
