@@ -23,6 +23,7 @@ namespace HamburguesitoNet.Application
 
             #region Services
             services.AddTransient<ProductService>();
+            services.AddTransient<OrderService>();
             #endregion
 
             #region Generic Repository
@@ -31,6 +32,14 @@ namespace HamburguesitoNet.Application
             services.AddTransient<IGet<Product>, ProductService>();
             services.AddTransient<IUpdate<Product>, ProductService>();
             services.AddTransient<IDelete<bool>, ProductService>();
+            #endregion
+
+            #region Order Service
+            services.AddTransient<IGenericRepository<Order>, GenericRepository<Order>>();
+            services.AddTransient<IAdd<Order>, OrderService>();
+            services.AddTransient<IGet<Order>, OrderService>();
+            services.AddTransient<IUpdate<Order>, OrderService>();
+           // services.AddTransient<IDelete<bool>, OrderService>();
             #endregion
 
             return services;
