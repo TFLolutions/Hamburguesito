@@ -1,5 +1,4 @@
-﻿using Application.Services.Interfaces;
-using AutoMapper;
+﻿using AutoMapper;
 using HamburguesitoNet.Application.Common.Behaviours;
 using HamburguesitoNet.Application.Repositories.Interfaces;
 using HamburguesitoNet.Application.Repositories;
@@ -9,6 +8,7 @@ using Microsoft.VisualBasic;
 using System.Reflection;
 using Domain.Models;
 using Application.Services;
+using Application.Services.Interfaces.Generics;
 
 namespace HamburguesitoNet.Application
 {

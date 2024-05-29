@@ -1,5 +1,5 @@
 ﻿using Application.Common.Exceptions;
-using Application.Services.Interfaces;
+using Application.Services.Interfaces.Generics;
 using AutoMapper;
 using Domain.Models;
 using MediatR;

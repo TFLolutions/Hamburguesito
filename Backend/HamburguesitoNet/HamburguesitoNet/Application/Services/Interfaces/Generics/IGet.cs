@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Services.Interfaces
+namespace Application.Services.Interfaces.Generics
 {
     public interface IGet<T> where T : class
     {

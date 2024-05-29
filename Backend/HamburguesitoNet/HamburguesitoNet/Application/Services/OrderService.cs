@@ -1,4 +1,4 @@
-﻿using Application.Services.Interfaces;
+﻿using Application.Services.Interfaces.Generics;
 using Domain.Models;
 using HamburguesitoNet.Application.Common.Interfaces;
 using HamburguesitoNet.Application.Repositories.Interfaces;
@@ -15,6 +15,8 @@ namespace Application.Services
     public class OrderService : IGet<Order>, IUpdate<Order>, IAdd<Order> //IDelete<Order>, 
     {
         private readonly IGenericRepository<Order> _orderRepository;
+        private readonly CustomerService customerService;
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<OrderService> _logger;
 
@@ -29,6 +31,8 @@ namespace Application.Services
         {
             try
             {
+                var customer = await customerService.Add(entity.Customer,cancellationToken);
+
                 await _orderRepository.AddAsync(entity);
                 await _unitOfWork.CommitAsync(cancellationToken);
 

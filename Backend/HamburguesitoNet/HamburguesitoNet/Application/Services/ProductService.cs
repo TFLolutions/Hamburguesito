@@ -1,6 +1,6 @@
 ﻿using Application.Command.ProductCommand.AdminActionsProduct.AdminActionUpdateProduct;
 using Application.Common.Exceptions;
-using Application.Services.Interfaces;
+using Application.Services.Interfaces.Generics;
 using Domain.Models;
 using HamburguesitoNet.Application.Common.Interfaces;
 using HamburguesitoNet.Application.Repositories.Interfaces;
