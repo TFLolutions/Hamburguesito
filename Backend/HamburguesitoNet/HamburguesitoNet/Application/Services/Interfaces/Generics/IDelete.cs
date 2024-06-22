@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.Services.Interfaces
+namespace Application.Services.Interfaces.Generics
 {
     public interface IDelete<T>
     {

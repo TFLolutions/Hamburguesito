@@ -1,5 +1,6 @@
 ﻿using Application.Command.ProductCommand.AdminActionsProduct.AdminActionUpdateProduct;
-using Application.Services.Interfaces;
+using Application.Common.Exceptions;
+using Application.Services.Interfaces.Generics;
 using Domain.Models;
 using HamburguesitoNet.Application.Common.Interfaces;
 using HamburguesitoNet.Application.Repositories.Interfaces;
@@ -38,27 +39,39 @@ namespace Application.Services
 
         public async Task<Product> Add(Product entity, CancellationToken cancellationToken)
         {
-            await _productRepository.AddAsync(entity);
-            await _unitOfWork.CommitAsync(cancellationToken);
+            try
+            {
+                await _productRepository.AddAsync(entity);
+                await _unitOfWork.CommitAsync(cancellationToken);
+            }
+            catch (CreateProductException ex)
+            {
+                throw new CreateProductException("No se pudo crear el producto");
+            }
+            
             return entity;
         }
         public async Task<Product> Update(Product entity, CancellationToken cancellationToken)
         {
-            var productDb = await GetById(entity.Id);
-            if (productDb != null || productDb.Active != false)
+            try
             {
-                productDb.Price = entity.Price;
-                productDb.Name = entity.Name;
-                productDb.Active = entity.Active;
-                productDb.Description = entity.Description;
-                _productRepository.Update(productDb);
-                await _unitOfWork.CommitAsync(cancellationToken);
-                return productDb;
+                var productDb = await GetById(entity.Id);
+                if (productDb != null || productDb.Active != false)
+                {
+                    productDb.Price = entity.Price;
+                    productDb.Name = entity.Name;
+                    productDb.Active = entity.Active;
+                    productDb.Description = entity.Description;
+                    _productRepository.Update(productDb);
+                    await _unitOfWork.CommitAsync(cancellationToken);
+                    return productDb;
 
+                }
+                else { throw new UpdateProductException("Error al actualizar producto"); }
             }
-            //TODO: Personalizar excepcion
-            else
-                throw new NotImplementedException();
+            catch (UpdateProductException ex) {
+            throw new UpdateProductException("Error al actualizar producto");
+            }               
         }
 
         public Task<Product> UpdateLastExecution(int entityId, DateTime lastExecution, CancellationToken cancellationToken)

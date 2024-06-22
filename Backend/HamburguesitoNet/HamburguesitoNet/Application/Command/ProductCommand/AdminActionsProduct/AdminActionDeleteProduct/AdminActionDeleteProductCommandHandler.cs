@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Services;
-using Application.Services.Interfaces;
+using Application.Services.Interfaces.Generics;
 using Domain.Models;
 using MediatR;
 

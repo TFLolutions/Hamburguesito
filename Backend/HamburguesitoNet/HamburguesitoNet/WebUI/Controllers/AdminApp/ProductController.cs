@@ -35,12 +35,9 @@ namespace WebUI.Controllers.AdminApp
             {
                 return Ok(await Mediator.Send(adminActionCreateProductCommand));
             }
-
-            // TODO : Personalizar excepcion 
-
-            catch (GetProductsException ex) 
+            catch (CreateProductException ex) 
             {
-                string message = "Could not get integrations.Failure: " + ex.ToString();
+                string message = "No se pudo crear el producto: " + ex.ToString();
                 return BadRequest(message);
             }
         } 
@@ -56,16 +53,12 @@ namespace WebUI.Controllers.AdminApp
             {
                 return Ok(await Mediator.Send(adminActionUpdateProductCommand));
             }
-
-            // TODO : Personalizar excepcion 
-
-            catch (GetProductsException ex)
+            catch (UpdateProductException ex)
             {
-                string message = "Could not get integrations.Failure: " + ex.ToString();
+                string message = "No se pudo actualizar el producto: " + ex.ToString();
                 return BadRequest(message);
             }
         }
-        //Delete controller 
         [HttpDelete]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
