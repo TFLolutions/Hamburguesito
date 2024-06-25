@@ -1,4 +1,5 @@
-﻿using Domain.Models.DTOs;
+﻿using Application.DTOs;
+using Domain.Models.DTOs;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Command.Auth.RegisterUser
 {
-    public class RegisterUserCommand : IRequest<RegisterUserDTO>
+    public class RegisterUserCommand : IRequest<RegisterUserResponse>
     {
         public string Email { get; set; }
         public string Username { get; set; }

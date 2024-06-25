@@ -1,40 +1,50 @@
-﻿using Domain.Models;
+﻿using Application.DTOs;
+using Domain.Models;
 using HamburguesitoNet.Application.Common.Interfaces.Services;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Application.Command.Auth.RegisterUser
 {
-    public class RegisterUserCommandHandler
+    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, RegisterUserResponse>
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AplicationUser> _userManager;
 
-        public RegisterUserCommandHandler(UserManager<IdentityUser> userManager)
+        public RegisterUserCommandHandler(UserManager<AplicationUser> userManager)
         {
             _userManager = userManager;
         }
 
-        public async Task<IdentityResult> Handle(RegisterUserCommand command)
+        public async Task<RegisterUserResponse> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
-            var user = new IdentityUser
+            var user = new AplicationUser
             {
-                UserName = command.Username,
-                Email = command.Email
+                UserName = request.Username,
+                Email = request.Email
             };
 
-            var result = await _userManager.CreateAsync(user, command.Password);
+            var result = await _userManager.CreateAsync(user);
+            var responseRoleUser = await _userManager.AddToRoleAsync(user, request.Role);
 
-            if (result.Succeeded && !string.IsNullOrEmpty(command.Role))
+            if (result.Succeeded && !string.IsNullOrEmpty(request.Role))
             {
-                await _userManager.AddToRoleAsync(user, command.Role);
+                await _userManager.AddToRoleAsync(user, request.Role);
             }
 
-            return result;
+            return new RegisterUserResponse
+            {
+                Success = result.Succeeded,
+                Errors = String.Join(" - ", result.Errors.Select(x => x.Description))
+            };
         }
     }
 }

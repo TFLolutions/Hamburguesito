@@ -9,6 +9,7 @@ using HamburguesitoNet.WebUI.Controllers;
 
 namespace WebUI.Controllers
 {
+    [ApiController]
     public class AuthController : ApiController
     {
         [HttpPost]
