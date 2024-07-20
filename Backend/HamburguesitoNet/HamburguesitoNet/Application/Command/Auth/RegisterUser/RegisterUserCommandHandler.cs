@@ -17,33 +17,41 @@ namespace Application.Command.Auth.RegisterUser
 {
     public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, RegisterUserResponse>
     {
-        private readonly UserManager<AplicationUser> _userManager;
+        public readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public RegisterUserCommandHandler(UserManager<AplicationUser> userManager)
+        public RegisterUserCommandHandler(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
 
         public async Task<RegisterUserResponse> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
-            var user = new AplicationUser
+            var user = new ApplicationUser
             {
                 UserName = request.Username,
                 Email = request.Email
             };
 
-            var result = await _userManager.CreateAsync(user);
-            var responseRoleUser = await _userManager.AddToRoleAsync(user, request.Role);
+            var responseUser = await _userManager.CreateAsync(user);
 
-            if (result.Succeeded && !string.IsNullOrEmpty(request.Role))
+            if (responseUser.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, request.Role);
+                foreach (var role in request.Role)
+                {
+                    if (!await _roleManager.RoleExistsAsync(role))
+                        throw new Exception("The specified role don't exists.");
+                    else
+                    {
+                        var responseRoleUser = await _userManager.AddToRoleAsync(user, role);
+                    }
+                }
             }
 
             return new RegisterUserResponse
             {
-                Success = result.Succeeded,
-                Errors = String.Join(" - ", result.Errors.Select(x => x.Description))
+                Success = responseUser.Succeeded,
+                Errors = String.Join(" - ", responseUser.Errors.Select(x => x.Description))
             };
         }
     }

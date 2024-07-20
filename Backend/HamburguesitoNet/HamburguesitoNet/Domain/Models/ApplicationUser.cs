@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Models
 {
-    public class AplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser
     {
         [DefaultValue("true")]
         public DateTime CreationDate { get; set; }

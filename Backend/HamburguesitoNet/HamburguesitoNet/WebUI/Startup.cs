@@ -1,3 +1,4 @@
+using Domain.Models;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using HamburguesitoNet.Application;

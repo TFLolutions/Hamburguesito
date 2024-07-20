@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace HamburguesitoNet.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : IdentityDbContext<AplicationUser>, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
     {
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
@@ -32,7 +32,7 @@ namespace HamburguesitoNet.Infrastructure.Persistence
         public DbSet<Order> Orders { get; set; }
         public DbSet<Table> Tables { get; set; }
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<AplicationUser> AplicationUsers { get; set; }
+        public DbSet<ApplicationUser> AplicationUsers { get; set; }
 
 
 
@@ -65,7 +65,6 @@ namespace HamburguesitoNet.Infrastructure.Persistence
         {
             builder.Entity<Product>().Property(p => p.Price).HasColumnType("decimal(18, 2)");
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
             base.OnModelCreating(builder);
         }
     }
