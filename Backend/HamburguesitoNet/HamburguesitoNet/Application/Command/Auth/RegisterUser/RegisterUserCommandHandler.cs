@@ -20,13 +20,17 @@ namespace Application.Command.Auth.RegisterUser
         public readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public RegisterUserCommandHandler(UserManager<ApplicationUser> userManager)
+        public RegisterUserCommandHandler(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<RegisterUserResponse> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
+            //Cambiar esto cuando ya tengamos autenticación
+            var isAdmin = true;
+
             var user = new ApplicationUser
             {
                 UserName = request.Username,
@@ -37,14 +41,23 @@ namespace Application.Command.Auth.RegisterUser
 
             if (responseUser.Succeeded)
             {
+                if (isAdmin)
+                {
+                  foreach(var role in request.Role)
+                    {
+                        IdentityRole roles = new IdentityRole();
+
+                        roles.Name = role;
+                        await _roleManager.CreateAsync(roles);
+                    }
+                }
+                
                 foreach (var role in request.Role)
                 {
-                    if (!await _roleManager.RoleExistsAsync(role))
+                    if (await _roleManager.RoleExistsAsync(role) == false)
                         throw new Exception("The specified role don't exists.");
                     else
-                    {
-                        var responseRoleUser = await _userManager.AddToRoleAsync(user, role);
-                    }
+                        await _userManager.AddToRoleAsync(user, role);
                 }
             }
 
