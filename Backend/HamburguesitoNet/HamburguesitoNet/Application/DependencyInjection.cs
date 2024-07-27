@@ -9,6 +9,7 @@ using System.Reflection;
 using Domain.Models;
 using Application.Services;
 using Application.Services.Interfaces.Generics;
+using Application.Common.Utils;
 
 namespace HamburguesitoNet.Application
 {
@@ -41,6 +42,10 @@ namespace HamburguesitoNet.Application
             services.AddTransient<IGet<Order>, OrderService>();
             services.AddTransient<IUpdate<Order>, OrderService>();
             // services.AddTransient<IDelete<bool>, OrderService>();
+            #endregion
+
+            #region JWT
+            services.AddSingleton<JwtHelper>();
             #endregion
 
             #region Customer Service
