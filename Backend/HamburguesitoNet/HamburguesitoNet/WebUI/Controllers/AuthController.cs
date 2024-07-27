@@ -6,14 +6,25 @@ using System.Net;
 using System.Threading.Tasks;
 using System;
 using HamburguesitoNet.WebUI.Controllers;
+using Application.Command.Auth.Login;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebUI.Controllers
 {
     [ApiController]
     public class AuthController : ApiController
     {
+        private readonly ILogger<AuthController> _logger;
+
+        public AuthController (ILogger<AuthController> logger)
+        {
+            _logger = logger;
+        }
+
         [HttpPost]
         [Route("register")]
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserCommand command)
@@ -28,28 +39,23 @@ namespace WebUI.Controllers
             }
         }
 
-        //[HttpPost]
-        //[Route("login")]
-        //[ProducesResponseType((int)HttpStatusCode.OK)]
-        //[ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        //[ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        //public async Task<IActionResult> Login([FromBody] GetUserByEmailAndPassQuery command)
-        //{
-        //    try
-        //    {
-        //        return Ok(await Mediator.Send(command));
-        //    }
-        //    catch (EmailPasswordWrongException e)
-        //    {
-        //        _logger.LogInformation(string.Format("User '{0}' failed to login.", command.Email));
-        //        return Unauthorized(e.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogInformation(ex.Message);
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+        [HttpPost]
+        [Route("login")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> Login([FromBody] GetUserByEmailAndPassQuery command)
+        {
+            try
+            {
+                return Ok(await Mediator.Send(command));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
 
         //[HttpPost]
         //[Route("reset-password")]
