@@ -9,6 +9,7 @@ using HamburguesitoNet.WebUI.Controllers;
 using Application.Command.Auth.Login;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using Application.Command.Auth.UserLockManagment;
 
 namespace WebUI.Controllers
 {
@@ -24,7 +25,7 @@ namespace WebUI.Controllers
 
         [HttpPost]
         [Route("register")]
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserCommand command)
@@ -73,6 +74,26 @@ namespace WebUI.Controllers
         //        return BadRequest(ex.Message);
         //    }
         //}
+
+
+
+        [Authorize(Roles = "Administrator")]
+        [HttpPost]
+        [Route("lock-management")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> UserLockManagement([FromBody] UserLockManagementCommand command)
+        {
+            try
+            {
+                return Ok(await Mediator.Send(command));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }

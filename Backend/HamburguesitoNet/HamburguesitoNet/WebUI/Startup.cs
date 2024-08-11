@@ -42,8 +42,6 @@ namespace HamburguesitoNet.WebUI
         {
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
 
-            //add dbcontext
-
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("Connectionstring")));
 
