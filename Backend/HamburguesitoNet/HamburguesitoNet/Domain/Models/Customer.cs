@@ -17,5 +17,6 @@ namespace Domain.Models
             public string Address { get; set; }
             public bool IsActive { get; set; }
             public ICollection<Order> Orders { get; set; } = new List<Order>();
+            public ApplicationUser User { get; set; }
     }
 }

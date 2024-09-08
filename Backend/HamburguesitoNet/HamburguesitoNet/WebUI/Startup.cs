@@ -1,3 +1,4 @@
+using Domain.Models;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using HamburguesitoNet.Application;
@@ -7,6 +8,7 @@ using HamburguesitoNet.Infrastructure;
 using HamburguesitoNet.Infrastructure.Persistence;
 using HamburguesitoNet.WebUI.Common;
 using HamburguesitoNet.WebUI.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -15,8 +17,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
+using System.Text;
 
 namespace HamburguesitoNet.WebUI
 {
@@ -36,14 +40,33 @@ namespace HamburguesitoNet.WebUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            //add dbcontext
+            services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
 
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("Connectionstring")));
 
 
             services.AddInfrastructure(Configuration);
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+           .AddJwtBearer(options =>
+           {
+               options.SaveToken = true;
+               options.RequireHttpsMetadata = false;
+               options.TokenValidationParameters = new TokenValidationParameters()
+               {
+                   ValidateIssuer = true,
+                   ValidateAudience = true,
+                   ValidAudience = Configuration["JWT:ValidAudience"],
+                   ValidIssuer = Configuration["JWT:ValidIssuer"],
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:SecretKey"])),
+                   RequireExpirationTime = true
+               };
+           });
 
             services.AddApplication();
 
@@ -82,7 +105,31 @@ namespace HamburguesitoNet.WebUI
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HamburguesitoNet" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter a valid token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
+                });
             });
+
 
             services.AddHttpClient();
         }
@@ -134,10 +181,12 @@ namespace HamburguesitoNet.WebUI
             {
                 c.SwaggerEndpoint("v1/swagger.json", "v1");
                 c.RoutePrefix = "swagger";
+                c.OAuthUseBasicAuthenticationWithAccessCodeGrant();
             });
 
             app.UseRouting();
-
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

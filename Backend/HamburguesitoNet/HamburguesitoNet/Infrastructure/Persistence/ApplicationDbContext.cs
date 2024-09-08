@@ -2,6 +2,7 @@
 using Domain.Models.Common;
 using HamburguesitoNet.Application.Common.Interfaces;
 using HamburguesitoNet.Application.Common.Interfaces.Services;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.Threading;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace HamburguesitoNet.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : DbContext, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
     {
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
@@ -31,10 +32,11 @@ namespace HamburguesitoNet.Infrastructure.Persistence
         public DbSet<Order> Orders { get; set; }
         public DbSet<Table> Tables { get; set; }
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<ApplicationUser> AplicationUsers { get; set; }
 
 
 
-        
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             foreach (var entry in ChangeTracker.Entries<Audit>())
@@ -63,7 +65,6 @@ namespace HamburguesitoNet.Infrastructure.Persistence
         {
             builder.Entity<Product>().Property(p => p.Price).HasColumnType("decimal(18, 2)");
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
             base.OnModelCreating(builder);
         }
     }

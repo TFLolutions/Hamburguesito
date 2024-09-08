@@ -9,6 +9,7 @@ using System.Reflection;
 using Domain.Models;
 using Application.Services;
 using Application.Services.Interfaces.Generics;
+using Application.Common.Utils;
 
 namespace HamburguesitoNet.Application
 {
@@ -24,6 +25,7 @@ namespace HamburguesitoNet.Application
             #region Services
             services.AddTransient<ProductService>();
             services.AddTransient<OrderService>();
+            services.AddTransient<CustomerService>();
             #endregion
 
             #region Generic Repository
@@ -39,7 +41,15 @@ namespace HamburguesitoNet.Application
             services.AddTransient<IAdd<Order>, OrderService>();
             services.AddTransient<IGet<Order>, OrderService>();
             services.AddTransient<IUpdate<Order>, OrderService>();
-           // services.AddTransient<IDelete<bool>, OrderService>();
+            // services.AddTransient<IDelete<bool>, OrderService>();
+            #endregion
+
+            #region JWT
+            services.AddSingleton<JwtHelper>();
+            #endregion
+
+            #region Customer Service
+            services.AddTransient<IGenericRepository<Customer>, GenericRepository<Customer>>();
             #endregion
 
             return services;
