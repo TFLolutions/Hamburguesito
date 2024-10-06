@@ -15,7 +15,7 @@ namespace Application.Queries.Users
 {
     public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, List<UsersDTO>>
     {
-        private UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public GetAllUsersQueryHandler(UserManager<ApplicationUser> userManager)
         {
