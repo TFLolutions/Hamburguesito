@@ -34,10 +34,11 @@ namespace Application.Command.Auth.RegisterUser
             var user = new ApplicationUser
             {
                 UserName = request.Username,
-                Email = request.Email
+                Email = request.Email,
+                CreationDate = request.CreationDate
             };
 
-            var responseUser = await _userManager.CreateAsync(user);
+            var responseUser = await _userManager.CreateAsync(user, request.Password);
 
             if (responseUser.Succeeded)
             {
