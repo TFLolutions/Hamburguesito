@@ -2,6 +2,7 @@
 using Domain.Models;
 using HamburguesitoNet.Application.Common.Interfaces.Services;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,39 +20,28 @@ namespace Application.Command.Auth.RegisterUser
     {
         public readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public RegisterUserCommandHandler(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public RegisterUserCommandHandler(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<RegisterUserResponse> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
-            //Cambiar esto cuando ya tengamos autenticación
-            var isAdmin = true;
-
             var user = new ApplicationUser
             {
                 UserName = request.Username,
-                Email = request.Email
+                Email = request.Email,
+                CreationDate = request.CreationDate
             };
 
-            var responseUser = await _userManager.CreateAsync(user);
+            var responseUser = await _userManager.CreateAsync(user, request.Password);
 
             if (responseUser.Succeeded)
             {
-                if (isAdmin)
-                {
-                  foreach(var role in request.Role)
-                    {
-                        IdentityRole roles = new IdentityRole();
-
-                        roles.Name = role;
-                        await _roleManager.CreateAsync(roles);
-                    }
-                }
-                
                 foreach (var role in request.Role)
                 {
                     if (await _roleManager.RoleExistsAsync(role) == false)

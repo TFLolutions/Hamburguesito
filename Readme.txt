@@ -10,3 +10,7 @@ PM> Add-Migration change_IdentityUser
 PM> Update-Database
 
 ------------------------------------------------------------------------------------------
+
+Usuario generico admin:
+
+admin - AdminPassword123!

@@ -1,4 +1,5 @@
-﻿using Application.Common.Utils;
+﻿using Application.Common.Exceptions.Login;
+using Application.Common.Utils;
 using Application.DTO;
 using AutoMapper;
 using Domain.Models;
@@ -34,14 +35,28 @@ namespace Application.Command.Auth.Login
 
         public async Task<string> Handle(GetUserByEmailAndPassQuery request, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(request.Email);
 
-            //Cambiar el ultimo false cuando la app haya deploy
-            var userCheck = await _signInManager.PasswordSignInAsync(user, request.Password, false, false);
-            var rolesUser = await _userManager.GetRolesAsync(user);
+                if (user == null)
+                    throw new LoginException("User or password is wrong");
 
-            _logger.LogInformation(string.Format("User '{0}' just logged in.", user.Email));
-            return new JwtSecurityTokenHandler().WriteToken(_jwtHelper.GenerateJwtToken(user.UserName, rolesUser, null));
+                //Cambiar el ultimo false cuando la app haya deploy
+                var userCheck = await _signInManager.PasswordSignInAsync(user, request.Password, false, false);
+                var rolesUser = await _userManager.GetRolesAsync(user);
+
+                _logger.LogInformation(string.Format("User '{0}' just logged in.", user.Email));
+
+                if (userCheck.Succeeded)
+                    return new JwtSecurityTokenHandler().WriteToken(_jwtHelper.GenerateJwtToken(user.UserName, rolesUser, null));
+                else
+                    throw new LoginException("User password is wrong");
+            }
+            catch (Exception ex)
+            {
+                throw new LoginException(ex.Message);
+            }
         }
     }
 }
