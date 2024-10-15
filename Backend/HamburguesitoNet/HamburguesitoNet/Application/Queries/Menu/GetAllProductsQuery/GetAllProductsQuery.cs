@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Queries.Menu
+namespace Application.Queries.Menu.GetAllProductsQuery
 {
     public class GetAllProductsQuery : IRequest<IList<Product>>
     {
