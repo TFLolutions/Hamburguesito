@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.Queries.Menu
+namespace Application.Queries.Menu.GetAllProductsQuery
 {
     public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, IList<Product>>
     {
