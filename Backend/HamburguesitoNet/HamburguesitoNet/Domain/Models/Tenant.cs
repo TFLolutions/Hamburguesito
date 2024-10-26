@@ -1,4 +1,5 @@
 ﻿using Domain.Models.Common;
+using Domain.Models.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,9 @@ namespace Domain.Models
     {
         public int Id { get; set; }
 
-        public Customer Customer { get; set; }
+        public string Name { get; set; }
+
+        public bool Active { get; set; }
 
     }
 }

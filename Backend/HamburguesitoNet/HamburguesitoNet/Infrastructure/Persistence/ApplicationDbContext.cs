@@ -35,6 +35,9 @@ namespace HamburguesitoNet.Infrastructure.Persistence
         public DbSet<Table> Tables { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<ApplicationUser> AplicationUsers { get; set; }
+        public DbSet<Tenant> Tenants { get; set; }
+
+        public DbSet<UserTenant> userTenants { get; set; }
 
 
 
@@ -108,6 +111,8 @@ namespace HamburguesitoNet.Infrastructure.Persistence
 
             // Define additional properties for Product
             builder.Entity<Product>().Property(p => p.Price).HasColumnType("decimal(18, 2)");
+
+           
         }
     }
 }
