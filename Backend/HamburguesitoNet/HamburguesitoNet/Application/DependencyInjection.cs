@@ -26,6 +26,8 @@ namespace HamburguesitoNet.Application
             services.AddTransient<ProductService>();
             services.AddTransient<OrderService>();
             services.AddTransient<CustomerService>();
+            services.AddTransient<TenantService>();
+            services.AddTransient<UserTenantService>();
             #endregion
 
             #region Generic Repository
@@ -42,6 +44,19 @@ namespace HamburguesitoNet.Application
             services.AddTransient<IGet<Order>, OrderService>();
             services.AddTransient<IUpdate<Order>, OrderService>();
             // services.AddTransient<IDelete<bool>, OrderService>();
+            #endregion
+
+            #region TenantService
+            services.AddTransient<IGenericRepository<Tenant>, GenericRepository<Tenant>>();
+            services.AddTransient<IAdd<Tenant>, TenantService>();
+            services.AddTransient<IGet<Tenant>, TenantService>();
+            #endregion
+
+            #region UserTenantService
+            services.AddTransient<IGenericRepository<UserTenant>, GenericRepository<UserTenant>>();
+            services.AddTransient<IAdd<UserTenant>,UserTenantService>();
+            services.AddTransient<IGet<UserTenant>, UserTenantService>();
+
             #endregion
 
             #region JWT

@@ -16,5 +16,8 @@ namespace Domain.Models
 
         [ForeignKey("CustomerFK")]
         public Customer Customer { get; set; }
+
+        
+        public Tenant idTenant { get; set; }
     }
 }

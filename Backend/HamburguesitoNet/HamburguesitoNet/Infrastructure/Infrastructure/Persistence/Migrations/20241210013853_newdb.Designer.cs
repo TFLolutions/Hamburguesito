@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241027233455_AddTenantUser")]
-    partial class AddTenantUser
+    [Migration("20241210013853_newdb")]
+    partial class newdb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -83,6 +83,9 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int?>("idTenantId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerFK")
@@ -96,6 +99,8 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("idTenantId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -264,15 +269,12 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Models.UserTenant", b =>
                 {
                     b.Property<int>("IdUser")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUser"));
 
                     b.Property<int>("IdTenant")
                         .HasColumnType("int");
 
-                    b.HasKey("IdUser");
+                    b.HasKey("IdUser", "IdTenant");
 
                     b.ToTable("UserTenants");
                 });
@@ -447,7 +449,13 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .WithOne("User")
                         .HasForeignKey("Domain.Models.ApplicationUser", "CustomerFK");
 
+                    b.HasOne("Tenant", "idTenant")
+                        .WithMany("ApplicationUsers")
+                        .HasForeignKey("idTenantId");
+
                     b.Navigation("Customer");
+
+                    b.Navigation("idTenant");
                 });
 
             modelBuilder.Entity("Domain.Models.Order", b =>
@@ -527,6 +535,11 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Models.Order", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Tenant", b =>
+                {
+                    b.Navigation("ApplicationUsers");
                 });
 #pragma warning restore 612, 618
         }

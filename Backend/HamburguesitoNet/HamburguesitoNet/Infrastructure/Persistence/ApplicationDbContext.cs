@@ -74,6 +74,11 @@ namespace HamburguesitoNet.Infrastructure.Persistence
 
             // Define additional properties for Product
             builder.Entity<Product>().Property(p => p.Price).HasColumnType("decimal(18, 2)");
+
+
+
+            //Define composal key for UserTenant
+            builder.Entity<UserTenant>().HasKey(u => new {u.IdUser,u.IdTenant});
         }
     }
 }

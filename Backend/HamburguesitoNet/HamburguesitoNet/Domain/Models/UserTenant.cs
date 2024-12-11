@@ -8,8 +8,13 @@ namespace Domain.Models
 {
     public class UserTenant
     {
-        [Key]
+        //This model has a composal key
+
+
         public int IdUser { get; set; }
         public int IdTenant { get; set; }
+
+
+      
     }
 }
