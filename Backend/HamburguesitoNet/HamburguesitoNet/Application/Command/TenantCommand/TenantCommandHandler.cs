@@ -3,6 +3,7 @@ using Domain.Models.DTOs;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -24,33 +25,40 @@ namespace Application.Command.TenantCommand
         {
             if (request == null)
             {
-                throw new ArgumentException("Request is null");                
+                throw new ArgumentException("Request is null");
             }
 
             var verifyTenant = await _tenantService.GetById(request.id);
 
-            //Verificar que no exista tenant con mismo nombre
+            var tenantDTO = new TenantDTO();
 
-            if (string.Equals(request.Name,verifyTenant.Name,StringComparison.OrdinalIgnoreCase))
+            if (verifyTenant == null)
             {
-                throw new ArgumentException("This name already exists, choose another one");
+                var tenant = new Tenant()
+                {
+                    Name = request.Name,
+                    Active = request.Active,
+                };
+                var addedTenant = await _tenantService.Add(tenant, cancellationToken);
+
+                tenantDTO = new TenantDTO
+                {
+                    id = addedTenant.Id,
+                    Name = addedTenant.Name,
+                    Active = addedTenant.Active,
+
+                };
+
             }
-
-            var tenant = new Tenant()
+            else
             {
-                Name = request.Name,
-                Active = request.Active,
-            };
+                //Verificar que no exista tenant con mismo nombre
 
-            var addedTenant = await _tenantService.Add(tenant, cancellationToken);
-
-            var tenantDTO = new TenantDTO
-            {
-                id = addedTenant.Id,
-                Name = addedTenant.Name,
-                Active = addedTenant.Active,
-
-            };
+                if (string.Equals(request.Name, verifyTenant.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ArgumentException("This name already exists, choose another one");
+                }
+            }
 
             return tenantDTO;
 

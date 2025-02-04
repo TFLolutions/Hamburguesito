@@ -53,12 +53,9 @@ namespace Application.Services
             return await _userTenantRepository.GetByIdAsync(entityId);
         }
 
-        //revisar
-
-
-        public async Task<bool> IsUserPartOfTenant(int userId, int tenantId)
+        public async Task<bool> IsUserPartOfTenant(Guid userId, int tenantId)
         {
-            var userTenant = await _userTenantRepository.FindByConditionAsync(ut => ut.IdUser == userId && ut.IdTenant == tenantId);
+            var userTenant = await _userTenantRepository.FindByConditionAsync(ut => ut.UserId == userId && ut.IdTenant == tenantId);
             return userTenant != null;
         }
 

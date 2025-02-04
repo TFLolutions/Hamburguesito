@@ -32,31 +32,31 @@ namespace Application.Command.AddUserTenantCommand
 
             var tenant = await _tenantService.GetById(request.IdTenant) ?? throw new ArgumentException($"This tenant {request.IdTenant} doesn´t exists");
 
+
             // Validar si existe el user en la bbdd
-            /*var user = await _userManager.FindByIdAsync(request.IdUser.ToString());
+
+
+            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
             if (user == null)
             {
-                throw new ArgumentException($"This user {request.IdUser} doesn't exist");
-            }*/
+                throw new ArgumentException($"This user {request.UserId} doesn't exist");
+            }
 
 
 
             //Revisar esta parte de codigo 
             //Validar si existe el usuario en ese tenant 
-            var isUserPartOfTenant = await _userTenantService.IsUserPartOfTenant(request.IdUser, request.IdTenant);
+            var isUserPartOfTenant = await _userTenantService.IsUserPartOfTenant(request.UserId, request.IdTenant);
             if (isUserPartOfTenant)
             {
-                throw new ArgumentException($"This user {request.IdUser} already exists in this tenant");
+                throw new ArgumentException($"This user {request.UserId} already exists in this tenant");
             }
-
-
-
 
 
 
             var userTenant = new UserTenant()
             {
-                IdUser = request.IdUser,
+                UserId = request.UserId,
                 IdTenant = request.IdTenant,
             };
 

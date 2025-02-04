@@ -78,7 +78,7 @@ namespace HamburguesitoNet.Infrastructure.Persistence
 
 
             //Define composal key for UserTenant
-            builder.Entity<UserTenant>().HasKey(u => new {u.IdUser,u.IdTenant});
+            builder.Entity<UserTenant>().HasKey(u => new {u.UserId,u.IdTenant});
         }
     }
 }

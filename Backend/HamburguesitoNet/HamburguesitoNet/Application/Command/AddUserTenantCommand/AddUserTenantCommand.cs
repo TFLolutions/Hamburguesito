@@ -11,12 +11,12 @@ namespace Application.Command.AddUserTenantCommand
     public class AddUserTenantCommand:IRequest<UserTenant>
     {
         public int IdTenant { get; set; }
-        public int IdUser { get; set; }
+        public Guid UserId { get; set; }
 
-        public AddUserTenantCommand(int idtenant, int idUser)
+        public AddUserTenantCommand(int idtenant, Guid userId)
         {
             IdTenant = idtenant;
-            IdUser = idUser;
+            UserId = userId;   
         }
 
     }

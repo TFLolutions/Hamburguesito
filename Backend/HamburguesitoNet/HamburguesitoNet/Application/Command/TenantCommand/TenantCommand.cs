@@ -14,6 +14,6 @@ namespace Application.Command.TenantCommand
         public string Name { get; set; }
 
         public bool Active { get; set; }
-       
+
     }
 }
