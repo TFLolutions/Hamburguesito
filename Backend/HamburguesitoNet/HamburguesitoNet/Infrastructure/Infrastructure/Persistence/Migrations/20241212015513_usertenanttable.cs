@@ -34,7 +34,7 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUsers_Tenants_TenantIdId",
+                name: "FK_AspNetUsers_Tenants_TenantId",
                 table: "AspNetUsers");
 
             migrationBuilder.DropTable(
@@ -44,11 +44,11 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                 name: "UserTenants");
 
             migrationBuilder.DropIndex(
-                name: "IX_AspNetUsers_TenantIdId",
+                name: "IX_AspNetUsers_TenantId",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
-                name: "TenantIdId",
+                name: "TenantId",
                 table: "AspNetUsers");
         }
     }

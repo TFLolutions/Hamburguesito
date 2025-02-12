@@ -184,6 +184,13 @@ namespace HamburguesitoNet.WebUI
                 c.OAuthUseBasicAuthenticationWithAccessCodeGrant();
             });
 
+            // **Crear la base de datos automáticamente si no existe**
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                dbContext.Database.Migrate(); // Aplica las migraciones
+            }
+
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

@@ -83,7 +83,7 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int?>("TenantIdId")
+                    b.Property<int?>("TenantId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -99,8 +99,6 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("TenantIdId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -449,13 +447,7 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .WithOne("User")
                         .HasForeignKey("Domain.Models.ApplicationUser", "CustomerFK");
 
-                    b.HasOne("Tenant", "TenantId")
-                        .WithMany("ApplicationUsers")
-                        .HasForeignKey("TenantIdId");
-
                     b.Navigation("Customer");
-
-                    b.Navigation("TenantId");
                 });
 
             modelBuilder.Entity("Domain.Models.Order", b =>
@@ -535,11 +527,6 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Models.Order", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("Tenant", b =>
-                {
-                    b.Navigation("ApplicationUsers");
                 });
 #pragma warning restore 612, 618
         }
