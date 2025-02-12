@@ -1,4 +1,5 @@
-﻿using Application.Services.Interfaces.Generics;
+﻿using Application.Services.Interfaces;
+using Application.Services.Interfaces.Generics;
 using Domain.Models;
 using HamburguesitoNet.Application.Common.Interfaces;
 using HamburguesitoNet.Application.Repositories.Interfaces;
@@ -12,19 +13,16 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class UserTenantService : IAdd<UserTenant>, IGet<UserTenant>
+    public class UserTenantService : IUserTenantService 
     {
-
         private readonly IGenericRepository<UserTenant> _userTenantRepository;
         private readonly IUnitOfWork _unitOfWork;
-        
-        
 
         public UserTenantService(IGenericRepository<UserTenant> usertenantRepository, IUnitOfWork unitOfWork)
         {
             _userTenantRepository = usertenantRepository;
             _unitOfWork = unitOfWork;
-            
+
         }
 
         public async Task<UserTenant> Add(UserTenant entity, CancellationToken cancellationToken)
@@ -53,15 +51,11 @@ namespace Application.Services
             return await _userTenantRepository.GetByIdAsync(entityId);
         }
 
-        public async Task<bool> IsUserPartOfTenant(Guid userId, int tenantId)
+        public async Task<IEnumerable<UserTenant>> GetTenantUsersByTenantId(int tenantId)
         {
-            var userTenant = await _userTenantRepository.FindByConditionAsync(ut => ut.UserId == userId && ut.IdTenant == tenantId);
-            return userTenant != null;
+            var userTenant = await _userTenantRepository.GetManyAsync(ut => ut.TenantId == tenantId);
+
+            return userTenant;
         }
-
-
-
-
-
     }
 }

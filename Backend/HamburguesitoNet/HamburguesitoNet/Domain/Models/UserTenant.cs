@@ -8,7 +8,7 @@ namespace Domain.Models
 {
     public class UserTenant
     {
-        public int IdTenant { get; set; }
+        public int TenantId { get; set; }
 
         public Guid UserId { get; set; }
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System;
 using Application.Command.TenantCommand;
 using Application.Command.AddUserTenantCommand;
+using Application.Queries.Tenant;
 
 namespace WebUI.Controllers
 {
@@ -44,7 +45,21 @@ namespace WebUI.Controllers
             }
         }
 
-
+        [HttpGet]
+        [Route("GetTenantUsers")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetTenantUsers(int tenantId)
+        {
+            try
+            {
+                return Ok(await Mediator.Send(new GetAllTenantUsersQuery { TenantId = tenantId}));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"UserTenant is not active {ex}");
+            }
+        }
 
 
     }

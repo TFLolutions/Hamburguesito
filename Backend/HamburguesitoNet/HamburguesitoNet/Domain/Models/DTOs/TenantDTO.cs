@@ -8,7 +8,7 @@ namespace Domain.Models.DTOs
 {
     public class TenantDTO
     {
-        public int id {  get; set; }
+        public int Id {  get; set; }
         public string Name { get; set; }
         public bool Active { get; set; }
     }

@@ -20,11 +20,11 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     IdUser = table.Column<int>(type: "int", nullable: false),
-                    IdTenant = table.Column<int>(type: "int", nullable: false)
+                    TenantId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserTenants", x => new { x.IdUser, x.IdTenant });
+                    table.PrimaryKey("PK_UserTenants", x => new { x.IdUser, x.TenantId });
                 });
 
           
@@ -34,7 +34,7 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUsers_Tenants_idTenantId",
+                name: "FK_AspNetUsers_Tenants_TenantIdId",
                 table: "AspNetUsers");
 
             migrationBuilder.DropTable(
@@ -44,11 +44,11 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                 name: "UserTenants");
 
             migrationBuilder.DropIndex(
-                name: "IX_AspNetUsers_idTenantId",
+                name: "IX_AspNetUsers_TenantIdId",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
-                name: "idTenantId",
+                name: "TenantIdId",
                 table: "AspNetUsers");
         }
     }

@@ -83,7 +83,7 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int?>("idTenantId")
+                    b.Property<int?>("TenantIdId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -100,7 +100,7 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("idTenantId");
+                    b.HasIndex("TenantIdId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -271,13 +271,13 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                     b.Property<int>("IdUser")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdTenant")
+                    b.Property<int>("TenantId")
                         .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("IdUser", "IdTenant");
+                    b.HasKey("IdUser", "TenantId");
 
                     b.ToTable("UserTenants");
                 });
@@ -452,13 +452,13 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .WithOne("User")
                         .HasForeignKey("Domain.Models.ApplicationUser", "CustomerFK");
 
-                    b.HasOne("Tenant", "idTenant")
+                    b.HasOne("Tenant", "TenantId")
                         .WithMany("ApplicationUsers")
-                        .HasForeignKey("idTenantId");
+                        .HasForeignKey("TenantIdId");
 
                     b.Navigation("Customer");
 
-                    b.Navigation("idTenant");
+                    b.Navigation("TenantId");
                 });
 
             modelBuilder.Entity("Domain.Models.Order", b =>

@@ -10,6 +10,7 @@ using Domain.Models;
 using Application.Services;
 using Application.Services.Interfaces.Generics;
 using Application.Common.Utils;
+using Application.Services.Interfaces;
 
 namespace HamburguesitoNet.Application
 {
@@ -48,14 +49,11 @@ namespace HamburguesitoNet.Application
 
             #region TenantService
             services.AddTransient<IGenericRepository<Tenant>, GenericRepository<Tenant>>();
-            services.AddTransient<IAdd<Tenant>, TenantService>();
-            services.AddTransient<IGet<Tenant>, TenantService>();
             #endregion
 
             #region UserTenantService
             services.AddTransient<IGenericRepository<UserTenant>, GenericRepository<UserTenant>>();
-            services.AddTransient<IAdd<UserTenant>,UserTenantService>();
-            services.AddTransient<IGet<UserTenant>, UserTenantService>();
+            services.AddTransient<IUserTenantService, UserTenantService>();
 
             #endregion
 

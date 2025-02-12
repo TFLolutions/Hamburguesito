@@ -17,7 +17,7 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
             migrationBuilder.AddPrimaryKey(
                 name: "PK_UserTenants",
                 table: "UserTenants",
-                columns: new[] { "UserId", "IdTenant" });
+                columns: new[] { "UserId", "TenantId" });
         }
 
         /// <inheritdoc />
@@ -30,7 +30,7 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
             migrationBuilder.AddPrimaryKey(
                 name: "PK_UserTenants",
                 table: "UserTenants",
-                columns: new[] { "IdUser", "IdTenant" });
+                columns: new[] { "IdUser", "TenantId" });
         }
     }
 }

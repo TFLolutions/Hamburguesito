@@ -43,7 +43,7 @@ namespace Application.Command.TenantCommand
 
                 tenantDTO = new TenantDTO
                 {
-                    id = addedTenant.Id,
+                    Id = addedTenant.Id,
                     Name = addedTenant.Name,
                     Active = addedTenant.Active,
 

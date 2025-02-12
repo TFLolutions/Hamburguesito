@@ -18,6 +18,6 @@ namespace Domain.Models
         public Customer Customer { get; set; }
 
         
-        public Tenant idTenant { get; set; }
+        public Tenant TenantId { get; set; }
     }
 }
