@@ -11,8 +11,7 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AplicationUsers");
+            
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",

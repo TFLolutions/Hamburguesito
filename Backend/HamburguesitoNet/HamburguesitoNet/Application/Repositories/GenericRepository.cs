@@ -78,6 +78,12 @@ namespace HamburguesitoNet.Application.Repositories
             await _unitOfWork.Context.Set<TEntity>().AddRangeAsync(entity);
         }
 
+        public async Task<TEntity> FindByConditionAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+             return await _unitOfWork.Context.Set<TEntity>().FirstOrDefaultAsync(predicate);
+        }
+
+
         #endregion
 
         #region Métodos sincrónicos

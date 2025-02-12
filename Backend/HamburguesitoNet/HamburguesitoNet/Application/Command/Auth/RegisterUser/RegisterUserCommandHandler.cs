@@ -44,8 +44,20 @@ namespace Application.Command.Auth.RegisterUser
             {
                 foreach (var role in request.Role)
                 {
-                    if (await _roleManager.RoleExistsAsync(role) == false)
-                        throw new Exception("The specified role don't exists.");
+
+
+                    // Cambiar hardcodeo y agregar validacion para ver si existe usuario 
+
+
+
+                    if (await _roleManager.RoleExistsAsync(role) == false) {
+                        IdentityRole roleRole = new IdentityRole();
+                        roleRole.NormalizedName = role;
+                        await _roleManager.CreateAsync(roleRole);
+                        //throw new Exception("The specified role don't exists.");
+                    }
+
+
                     else
                         await _userManager.AddToRoleAsync(user, role);
                 }

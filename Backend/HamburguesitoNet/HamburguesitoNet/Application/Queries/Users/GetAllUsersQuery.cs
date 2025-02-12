@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Application.Queries.Users
 {
-    public class GetAllUsersQuery:IRequest<List<UsersDTO>>
+    public class GetAllUsersQuery : IRequest<List<UsersDTO>>
     {
+
     }
 }

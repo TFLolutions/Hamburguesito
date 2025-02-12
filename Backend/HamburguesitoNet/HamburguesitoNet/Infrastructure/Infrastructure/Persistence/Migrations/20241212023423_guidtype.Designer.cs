@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241027233455_AddTenantUser")]
-    partial class AddTenantUser
+    [Migration("20241212023423_guidtype")]
+    partial class guidtype
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -83,6 +83,9 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int?>("TenantId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerFK")
@@ -96,6 +99,8 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("TenantId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -264,15 +269,15 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Models.UserTenant", b =>
                 {
                     b.Property<int>("IdUser")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUser"));
-
-                    b.Property<int>("IdTenant")
+                    b.Property<int>("TenantId")
                         .HasColumnType("int");
 
-                    b.HasKey("IdUser");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("IdUser", "TenantId");
 
                     b.ToTable("UserTenants");
                 });

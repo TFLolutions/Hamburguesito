@@ -28,6 +28,11 @@ namespace HamburguesitoNet.Application.Repositories.Interfaces
         Task AddAsync(TEntity entity);
 
         Task AddRangeAsync(TEntity entity);
+
+        Task<TEntity> FindByConditionAsync(Expression<Func<TEntity, bool>> predicate);
+     
+        
+
         #endregion
 
         #region Métodos sincrónicos
