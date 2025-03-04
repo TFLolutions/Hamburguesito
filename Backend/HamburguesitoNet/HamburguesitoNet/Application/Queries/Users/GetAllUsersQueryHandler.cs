@@ -38,9 +38,7 @@ namespace Application.Queries.Users
                 LockoutEnabled = user.LockoutEnabled,
                 AccessFailedCount = user.AccessFailedCount,
             })
-                .ToList();
-
-           
+            .ToList();
 
 
             foreach (var item in response)
@@ -50,7 +48,6 @@ namespace Application.Queries.Users
             }
 
             return usersDto;
-
         }
     }
 }
