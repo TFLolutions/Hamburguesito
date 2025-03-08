@@ -24,7 +24,7 @@ namespace HamburguesitoNet.Infrastructure.Services
         {
             try
             {
-                var adminRole = "Admin";
+                var adminRole = "Administrator";
 
                 // Check if the admin role exists, and create it if it doesn't
                 if (!await _roleManager.RoleExistsAsync(adminRole))
