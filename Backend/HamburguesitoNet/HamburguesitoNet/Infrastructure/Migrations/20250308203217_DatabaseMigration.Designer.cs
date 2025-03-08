@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Infrastructure.Persistence.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240726231502_change_IdentityUser")]
-    partial class change_IdentityUser
+    [Migration("20250308203217_DatabaseMigration")]
+    partial class DatabaseMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,9 +39,6 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("CustomerFK")
-                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -84,10 +81,6 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CustomerFK")
-                        .IsUnique()
-                        .HasFilter("[CustomerFK] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -138,7 +131,12 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("CustomerId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Customers");
                 });
@@ -259,6 +257,22 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                     b.HasKey("TableId");
 
                     b.ToTable("Tables");
+                });
+
+            modelBuilder.Entity("Domain.Models.UserTenant", b =>
+                {
+                    b.Property<int>("TenantId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TenantId"));
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("TenantId");
+
+                    b.ToTable("UserTenants");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -394,13 +408,44 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Models.ApplicationUser", b =>
+            modelBuilder.Entity("Tenant", b =>
                 {
-                    b.HasOne("Domain.Models.Customer", "Customer")
-                        .WithOne("User")
-                        .HasForeignKey("Domain.Models.ApplicationUser", "CustomerFK");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Navigation("Customer");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tenants");
+                });
+
+            modelBuilder.Entity("Domain.Models.Customer", b =>
+                {
+                    b.HasOne("Domain.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Models.Order", b =>
@@ -473,8 +518,6 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Models.Customer", b =>
                 {
                     b.Navigation("Orders");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Models.Order", b =>

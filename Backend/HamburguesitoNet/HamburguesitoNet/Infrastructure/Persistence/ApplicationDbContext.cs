@@ -5,6 +5,7 @@ using HamburguesitoNet.Application.Common.Interfaces.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
 using System.Threading;
@@ -21,15 +22,14 @@ namespace HamburguesitoNet.Infrastructure.Persistence
         }
 
         private readonly IDateTime _dateTime;
-        private readonly IUserService _userService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public ApplicationDbContext(DbContextOptions options,
-            IDateTime dateTime,
-            IUserService userService) : base(options)
+        public ApplicationDbContext(DbContextOptions options, IDateTime dateTime, IServiceProvider serviceProvider) : base(options)
         {
             _dateTime = dateTime;
-            _userService = userService;
+            _serviceProvider = serviceProvider;
         }
+
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Table> Tables { get; set; }
@@ -43,16 +43,18 @@ namespace HamburguesitoNet.Infrastructure.Persistence
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
+            var userService = _serviceProvider.GetRequiredService<IUserService>();
+
             foreach (var entry in ChangeTracker.Entries<Audit>())
             {
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedBy = _userService.GetUser();
+                        entry.Entity.CreatedBy = userService.GetUser();
                         entry.Entity.Created = _dateTime.Now;
                         break;
                     case EntityState.Modified:
-                        entry.Entity.UpdatedBy = _userService.GetUser();
+                        entry.Entity.UpdatedBy = userService.GetUser();
                         entry.Entity.Updated = _dateTime.Now;
                         break;
                 }
@@ -74,11 +76,6 @@ namespace HamburguesitoNet.Infrastructure.Persistence
 
             // Define additional properties for Product
             builder.Entity<Product>().Property(p => p.Price).HasColumnType("decimal(18, 2)");
-
-
-
-            //Define composal key for UserTenant
-            builder.Entity<UserTenant>().HasKey(u => new {u.UserId,u.TenantId});
         }
     }
 }

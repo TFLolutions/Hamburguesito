@@ -11,10 +11,6 @@ namespace Domain.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        [DefaultValue("true")]
         public DateTime CreationDate { get; set; }
-
-        [ForeignKey("CustomerFK")]
-        public Customer Customer { get; set; }
     }
 }

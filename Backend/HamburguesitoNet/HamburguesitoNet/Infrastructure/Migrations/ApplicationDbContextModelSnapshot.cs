@@ -4,19 +4,16 @@ using HamburguesitoNet.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Infrastructure.Persistence.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241212023423_guidtype")]
-    partial class guidtype
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,9 +36,6 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("CustomerFK")
-                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -83,14 +77,7 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int?>("TenantId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CustomerFK")
-                        .IsUnique()
-                        .HasFilter("[CustomerFK] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -99,8 +86,6 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("TenantId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -143,7 +128,12 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("CustomerId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Customers");
                 });
@@ -268,16 +258,16 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Models.UserTenant", b =>
                 {
-                    b.Property<int>("IdUser")
+                    b.Property<int>("TenantId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("TenantId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TenantId"));
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("IdUser", "TenantId");
+                    b.HasKey("TenantId");
 
                     b.ToTable("UserTenants");
                 });
@@ -446,13 +436,13 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
                     b.ToTable("Tenants");
                 });
 
-            modelBuilder.Entity("Domain.Models.ApplicationUser", b =>
+            modelBuilder.Entity("Domain.Models.Customer", b =>
                 {
-                    b.HasOne("Domain.Models.Customer", "Customer")
-                        .WithOne("User")
-                        .HasForeignKey("Domain.Models.ApplicationUser", "CustomerFK");
+                    b.HasOne("Domain.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("Customer");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Models.Order", b =>
@@ -525,8 +515,6 @@ namespace Infrastructure.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Models.Customer", b =>
                 {
                     b.Navigation("Orders");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Models.Order", b =>
