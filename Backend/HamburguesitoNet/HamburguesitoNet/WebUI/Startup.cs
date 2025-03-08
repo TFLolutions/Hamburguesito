@@ -3,9 +3,11 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using HamburguesitoNet.Application;
 using HamburguesitoNet.Application.Common.Interfaces;
+using HamburguesitoNet.Application.Common.Interfaces.Services;
 using HamburguesitoNet.Application.Common.Utils;
 using HamburguesitoNet.Infrastructure;
 using HamburguesitoNet.Infrastructure.Persistence;
+using HamburguesitoNet.Infrastructure.Services;
 using HamburguesitoNet.WebUI.Common;
 using HamburguesitoNet.WebUI.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -140,29 +142,19 @@ namespace HamburguesitoNet.WebUI
             if (env.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-
-                //app.UseDeveloperExceptionPage();
-                //app.UseDatabaseErrorPage();
             }
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseCors(_policyName);
-
             app.UseResponseCaching();
-
             app.UseCustomExceptionHandler();
             app.UseHealthChecks("/health");
-            //app.UseHttpsRedirection();
             app.UseStaticFiles();
-            // Swagger UI with traefik stripprefix middleware support. Source code:
-            // https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/1253#issuecomment-1019382999
             app.UseSwagger(c =>
             {
                 c.PreSerializeFilters.Add((swaggerDoc, request) =>
@@ -184,11 +176,13 @@ namespace HamburguesitoNet.WebUI
                 c.OAuthUseBasicAuthenticationWithAccessCodeGrant();
             });
 
-            // **Crear la base de datos automáticamente si no existe**
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 dbContext.Database.Migrate(); // Aplica las migraciones
+
+                var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+                userService.CreateAdminUserAsync().Wait(); // Crea el usuario administrador
             }
 
             app.UseRouting();

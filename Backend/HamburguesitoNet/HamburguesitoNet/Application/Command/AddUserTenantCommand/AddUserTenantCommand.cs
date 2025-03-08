@@ -13,9 +13,9 @@ namespace Application.Command.AddUserTenantCommand
         public int TenantId { get; set; }
         public Guid UserId { get; set; }
 
-        public AddUserTenantCommand(int TenantId, Guid userId)
+        public AddUserTenantCommand(int tenantId, Guid userId)
         {
-            TenantId = TenantId;
+            TenantId = tenantId;
             UserId = userId;   
         }
 

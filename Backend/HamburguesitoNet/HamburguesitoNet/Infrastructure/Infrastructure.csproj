@@ -20,5 +20,9 @@
     <ProjectReference Include="..\Application\Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\Persistence\" />
+  </ItemGroup>
+
 
 </Project>

@@ -17,7 +17,6 @@ namespace Domain.Models.DTOs
         public bool LockoutEnabled { get; set; }
         public int AccessFailedCount { get; set; }
         public List<string> Role { get; set; }
-        public int? TenantId { get; set; }
 
     }
 }
