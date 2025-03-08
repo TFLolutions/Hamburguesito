@@ -27,7 +27,7 @@ namespace WebUI.Controllers
 
         [HttpPost]
         [Route("register")]
-        //[Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserCommand command)
@@ -44,6 +44,7 @@ namespace WebUI.Controllers
 
         [HttpPost]
         [Route("login")]
+        [AllowAnonymous]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
